@@ -1,0 +1,49 @@
+{% load static %}
+<section class="py-24 hex-pattern-bg border-t border-b border-white/5 relative">
+    <div class="absolute inset-0 hex-pattern-overlay pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-black mb-6">Designed for <span class="bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-white">Results</span>.</h2>
+        </div>
+
+        <div class="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-20">
+            
+            <!-- Left Stats -->
+            <div class="flex-1 w-full space-y-6 lg:text-right flex flex-col items-center lg:items-end order-2 lg:order-1">
+                <div class="bg-black/50 border border-white/5 p-6 rounded-2xl w-full max-w-sm hover:border-brand-red/30 transition">
+                    <h4 class="text-red-500 font-black text-2xl mb-1">[20]g</h4>
+                    <p class="font-bold text-white uppercase tracking-wide text-sm">Whey Protein Isolate</p>
+                    <p class="text-xs text-gray-500 mt-2">Fast absorbing, premium quality fuel.</p>
+                </div>
+                <div class="bg-black/50 border border-white/5 p-6 rounded-2xl w-full max-w-sm hover:border-brand-red/30 transition">
+                    <h4 class="text-red-500 font-black text-2xl mb-1">0g</h4>
+                    <p class="font-bold text-white uppercase tracking-wide text-sm">Added Sugars</p>
+                    <p class="text-xs text-gray-500 mt-2">Sweetened cleanly with Allulose & Monk Fruit.</p>
+                </div>
+            </div>
+
+            <!-- Center Visual -->
+            <div class="flex-1 order-1 lg:order-2 flex justify-center w-full">
+                <!-- PLACEHOLDER label render overlayed -->
+                <div class="relative animate-float shadow-[0_0_80px_rgba(226,30,38,0.2)] rounded-[3rem] p-2 bg-gradient-to-b from-white/10 to-transparent max-w-md w-full">
+                    <img src="{% static 'images/product_bag.png' %}" alt="Swolé Bears Packaging" class="w-full h-full object-cover aspect-[3/4] rounded-[2.5rem] bg-[#111]">
+                </div>
+            </div>
+
+            <!-- Right Stats -->
+            <div class="flex-1 w-full space-y-6 flex flex-col items-center lg:items-start order-3">
+                <div class="bg-black/50 border border-white/5 p-6 rounded-2xl w-full max-w-sm hover:border-brand-red/30 transition">
+                    <h4 class="text-red-500 font-black text-2xl mb-1">100</h4>
+                    <p class="font-bold text-white uppercase tracking-wide text-sm">Gummies Per Bag</p>
+                    <p class="text-xs text-gray-500 mt-2">10 Servings. True value.</p>
+                </div>
+                <div class="bg-black/50 border border-white/5 p-6 rounded-2xl w-full max-w-sm hover:border-brand-red/30 transition">
+                    <h4 class="text-red-500 font-black text-2xl mb-1">KETO</h4>
+                    <p class="font-bold text-white uppercase tracking-wide text-sm">Friendly Formula</p>
+                    <p class="text-xs text-gray-500 mt-2">Low carb, high reward.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

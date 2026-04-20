@@ -1,0 +1,89 @@
+{% load static %}
+<section id="hero" class="relative overflow-hidden pt-12 pb-24 md:pt-20 md:pb-32 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-neutral-800 via-[#111] to-[#0b0b0b]">
+
+    <!-- Background Accents -->
+    <div class="absolute top-0 right-0 -m-32 md:-m-48 animate-pulse-soft opacity-40 mix-blend-screen pointer-events-none delay-200">
+        <div class="w-[400px] h-[400px] bg-brand-red rounded-full filter blur-[150px]"></div>
+    </div>
+    <div class="absolute bottom-0 left-0 -m-32 md:-m-48 animate-pulse-soft opacity-20 mix-blend-screen pointer-events-none">
+        <div class="w-[500px] h-[500px] bg-red-800 rounded-full filter blur-[200px]"></div>
+    </div>
+
+    <!-- Centered Prominent Logo at the start of the site -->
+    <div class="w-full relative z-10 flex justify-center mb-10 md:mb-16 mt-4 md:mt-0">
+        <img src="{% static 'images/logo.png' %}" alt="Swolé Bears Branding" class="h-32 md:h-56 drop-shadow-[0_15px_30px_rgba(226,30,38,0.4)] hover:scale-105 transition-transform duration-500">
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center gap-12 lg:gap-24">
+        
+        <!-- Copy Side -->
+        <div class="flex-1 text-center md:text-left pb-12 flex flex-col items-center md:items-start">
+            
+            <h1 class="text-5xl md:text-6xl lg:text-[5rem] leading-[1.05] tracking-tight font-black mb-6 text-white drop-shadow-2xl">
+                Candy Energy.<br />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-600 drop-shadow-[0_0_15px_rgba(226,30,38,0.5)]">Protein Purpose.</span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-gray-300 font-normal mb-8 leading-relaxed max-w-xl mx-auto md:mx-0">
+                Your post-workout snack just got way more fun. Convenient, craveable, protein gummy bears built for your active lifestyle. No water, no messy powder, just gains.
+            </p>
+
+            <div class="bg-black/40 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-2xl shadow-2xl relative">
+                <!-- Glowing border effect -->
+                <div class="absolute -inset-[1px] bg-gradient-to-r from-red-600 via-transparent to-red-600 rounded-2xl opacity-30 pointer-events-none"></div>
+
+                <div class="flex items-center justify-between mb-4">
+                    <span class="font-bold text-sm tracking-wider uppercase text-red-500 block mb-2">Get Full Access</span>
+                    <span class="text-xs bg-red-600/20 text-red-400 py-1 px-3 rounded-full border border-red-500/30">Access Inside</span>
+                </div>
+                
+                <form id="hero-form" class="waitlist-form space-y-4 relative z-10">
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" name="honeypot" style="display:none;" />
+                        {{ form.email }}
+                        <button type="submit" class="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-brand-red hover:bg-red-600 text-white font-bold text-lg shadow-[0_4px_14px_0_rgba(226,30,38,0.39)] transition transition-all duration-300 active:scale-95 whitespace-nowrap">
+                            Join the Swolé List
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-400 font-medium mt-2">No spam. Just drops, flavors, and launch access.</p>
+                    <input type="hidden" name="consent_status" value="on">
+                    <div class="form-message hidden mt-3 text-sm font-semibold"></div>
+                </form>
+                
+                <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-center md:justify-start gap-4">
+                    <div class="flex -space-x-2">
+                        <!-- Placeholder avatars -->
+                        <div class="w-8 h-8 rounded-full border-2 border-brand-dark bg-gray-500"></div>
+                        <div class="w-8 h-8 rounded-full border-2 border-brand-dark bg-gray-600"></div>
+                        <div class="w-8 h-8 rounded-full border-2 border-brand-dark bg-gray-700"></div>
+                        <div class="w-8 h-8 rounded-full border-2 border-brand-dark bg-gray-800 flex items-center justify-center text-[10px] font-bold">+1k</div>
+                    </div>
+                    <p class="text-xs text-gray-400 font-medium tracking-wide">
+                        Join the Swolé list for early drops, new flavors, and everything we're building.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Product Image Side -->
+        <div class="flex-1 w-full max-w-lg mx-auto relative perspective-[1000px]">
+             <!-- Main Product Mockup -->
+            <img src="{% static 'images/product_bag.png' %}" alt="Swolé Bears Fruit Punch Protein Gummys" class="w-full drop-shadow-[0_25px_35px_rgba(226,30,38,0.25)] relative z-20 animate-float">
+            
+            <!-- Contextual Badges -->
+            <div class="absolute top-1/4 -right-4 md:-right-12 z-30 bg-black/60 backdrop-blur-md border border-brand-red/40 px-5 py-3 rounded-2xl shadow-xl transform rotate-3">
+                <span class="block text-3xl font-black text-white leading-none">[20]g</span>
+                <span class="block text-[10px] uppercase text-red-400 tracking-wider font-bold">Protein</span>
+            </div>
+            
+            <div class="absolute bottom-1/4 -right-4 md:-right-8 z-30 bg-black/60 backdrop-blur-md border border-white/10 px-4 py-2 rounded-xl shadow-xl transform -rotate-3">
+                <span class="block text-sm font-bold text-white leading-none">High-Protein</span>
+                <span class="block text-xs text-gray-400 text-center">No Shaker Req.</span>
+            </div>
+            
+            <!-- Floor Shadow -->
+            <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-black/50 blur-[20px] rounded-[100%] pointer-events-none"></div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,52 @@
+{% load static %}
+<section id="founder-story" class="py-24 hex-pattern-bg relative">
+    <div class="absolute inset-0 hex-pattern-overlay pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div class="grid md:grid-cols-2 gap-16 items-center">
+            
+            <!-- Context / Quote -->
+            <div class="order-2 md:order-1">
+                <h2 class="text-sm font-bold text-red-500 tracking-widest uppercase mb-4">My Story</h2>
+                <h3 class="text-3xl md:text-4xl font-black mb-8 leading-tight">
+                    "There had to be a better way to enjoy my post-workout protein."
+                </h3>
+                
+                <div class="space-y-6 text-gray-400 leading-relaxed">
+                    <p>
+                        One day, after an intense workout with my friends in the park, I reached for a protein shake but was disappointed with the gritty texture and clumps of powder that settled at the bottom of my shaker bottle.
+                    </p>
+                    <p>
+                        I knew there had to be a better way to enjoy my post-workout protein without sacrificing taste and convenience. That's when I had the idea of creating Swolé Bears.
+                    </p>
+                    <p class="text-white font-medium">
+                        Packing protein into a gummy snack is a cleaner, more enjoyable way of consuming your post-workout protein. I wish to share with you the amazing experience of having your protein through a gummy snack.
+                    </p>
+                </div>
+
+                <div class="mt-10 pt-8 border-t border-white/5 flex items-center gap-6">
+                    <!-- PLACEHOLDER Founder Signature -->
+                    <!--<div class="text-2xl font-serif italic text-gray-300 opacity-80" style="font-family: 'Brush Script MT', cursive;">David M Louis.</div> -->
+                    <div>
+                        <p class="font-bold text-white uppercase tracking-wider text-sm">David M. Louis</p>
+                        <p class="text-xs text-brand-red">Founder, Swolé Bears</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Placeholder -->
+            <div class="order-1 md:order-2">
+                <div class="relative w-full aspect-[4/5] bg-[#111] rounded-3xl overflow-hidden border border-white/10 shadow-2xl group">
+                    <!-- Default founder image or product context -->
+                    <img src="{% static 'images/founder.png' %}" alt="Founder" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition duration-500 grayscale group-hover:grayscale-0" onerror="this.src=''; this.className='hidden'; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center flex-col\'><span class=\'text-zinc-600 font-bold tracking-widest text-sm uppercase\'>Founder Photo</span></div>';">
+                    
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+                    
+                    <div class="absolute bottom-6 left-6 flex items-center gap-3">
+                         <img src="{% static 'images/logo-icon.png' %}" alt="Icon" class="w-8 h-8 rounded-full" onerror="this.style.display='none'">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

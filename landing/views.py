@@ -100,10 +100,10 @@ Would love to hear about it.</p>
     David M. Louis | <em>Founder</em><br>
     <strong>Swolé Bears - Pre-order Now</strong> <a href="https://swolebears.com" style="color: blue; text-decoration: none;">swolebears.com</a><br>
     <br>
-    <a href="https://instagram.com/swolebears"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/240px-Instagram_icon.png" width="24" height="24" alt="Instagram" style="margin-right: 5px;"></a>
+    <a href="https://instagram.com/swolebearsgummy"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/240px-Instagram_icon.png" width="24" height="24" alt="Instagram" style="margin-right: 5px;"></a>
     <a href="https://tiktok.com/@swolebears"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a9/TikTok_logo.svg/240px-TikTok_logo.svg.png" width="24" height="24" alt="TikTok" style="margin-right: 5px;"></a>
     <a href="https://youtube.com/@swolebears"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/240px-YouTube_full-color_icon_%282017%29.svg.png" width="24" height="24" alt="YouTube" style="margin-right: 5px;"></a>
-    <a href="https://facebook.com/swolebears"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/240px-2021_Facebook_icon.svg.png" width="24" height="24" alt="Facebook"></a>
+    <a href="https://www.facebook.com/groups/swolebearslaunch"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/240px-2021_Facebook_icon.svg.png" width="24" height="24" alt="Facebook"></a>
 </p>
 """
                 try:

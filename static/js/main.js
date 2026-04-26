@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         msgContainer.classList.add('text-green-400');
                         msgContainer.textContent = data.message;
                         formInputs.forEach(input => input.disabled = true);
-                        submitBtn.innerHTML = `✔ waitlisted!`;
+                        submitBtn.innerHTML = `✔ Locked In!`;
                         submitBtn.classList.replace('bg-brand-red', 'bg-green-600');
                         submitBtn.classList.remove('hover:bg-red-700');
                         

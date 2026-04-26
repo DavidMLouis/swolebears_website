@@ -82,16 +82,38 @@ Would love to hear about it.
 Cheers,
 
 --
-David Louis
-Founder, Swolé Bears
-https://swolebears.com"""
+David M. Louis | Founder
+Swolé Bears - Pre-order Now swolebears.com"""
+
+                html_message = """\
+<p style="font-family: Arial, sans-serif; font-size: 15px; color: #222;">Hey,</p>
+<p style="font-family: Arial, sans-serif; font-size: 15px; color: #222;">Really appreciate you checking out Swolé Bears.</p>
+<p style="font-family: Arial, sans-serif; font-size: 15px; color: #222;">We’re building something a little different — a clean, no-shaker way to hit your protein without dealing with powders or shakes.<br>
+I want to learn more about you a bit more, so I can make it as good as possible.</p>
+<p style="font-family: Arial, sans-serif; font-size: 15px; color: #222;">Quick question for you:</p>
+<p style="font-family: Arial, sans-serif; font-size: 15px; color: #222;">What do you currently do for protein or staying healthy? Anything you’re into?<br>
+Would love to hear about it.</p>
+<p style="font-family: Arial, sans-serif; font-size: 15px; color: #222;">Cheers,</p>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; margin-top: 20px;">
+    -----------------------------<br>
+    David M. Louis | <em>Founder</em><br>
+    <strong>Swolé Bears - Pre-order Now</strong> <a href="https://swolebears.com" style="color: blue; text-decoration: none;">swolebears.com</a><br>
+    <br>
+    <a href="https://instagram.com/swolebears"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/240px-Instagram_icon.png" width="24" height="24" alt="Instagram" style="margin-right: 5px;"></a>
+    <a href="https://tiktok.com/@swolebears"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a9/TikTok_logo.svg/240px-TikTok_logo.svg.png" width="24" height="24" alt="TikTok" style="margin-right: 5px;"></a>
+    <a href="https://youtube.com/@swolebears"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/240px-YouTube_full-color_icon_%282017%29.svg.png" width="24" height="24" alt="YouTube" style="margin-right: 5px;"></a>
+    <a href="https://facebook.com/swolebears"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/240px-2021_Facebook_icon.svg.png" width="24" height="24" alt="Facebook"></a>
+</p>
+"""
                 try:
                     send_mail(
                         subject=email_subject,
-                        message=email_body,
+                        message=email_body, # Fallback for plain text clients
                         from_email=settings.DEFAULT_FROM_EMAIL,
                         recipient_list=[subscriber.email],
                         fail_silently=True,
+                        html_message=html_message # Sends the rich HTML email
                     )
                 except Exception as email_err:
                     print(f"Failed to send email to {subscriber.email}: {email_err}")

@@ -79,7 +79,12 @@ Quick question for you:
 What do you currently do for protein or staying healthy? Anything you’re into?
 Would love to hear about it.
 
-Cheers,"""
+Cheers,
+
+--
+David Louis
+Founder, Swolé Bears
+https://swolebears.com"""
                 try:
                     send_mail(
                         subject=email_subject,

@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. UTM Param capturing
     const urlParams = new URLSearchParams(window.location.search);
-    const utms = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'source'];
+    const utms = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
     
     // Store in sessionStorage if present in URL
     utms.forEach(param => {

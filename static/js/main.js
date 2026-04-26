@@ -129,6 +129,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
+            
+            // If the anchor has a data-source, update the hero form's source input
+            const dataSource = this.getAttribute('data-source');
+            if (dataSource) {
+                const heroSourceInput = document.querySelector('#hero-form input[name="source"]');
+                if (heroSourceInput) {
+                    heroSourceInput.value = dataSource;
+                }
+            }
+
             const target = document.querySelector(this.getAttribute('href'));
             if(target) {
                 target.scrollIntoView({

@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.core.mail import send_mail
+from django.conf import settings
 
 from .forms import SubscriberForm
 from .models import Subscriber
@@ -62,6 +64,32 @@ class LandingPageView(View):
                     'consent_status': subscriber.consent_status,
                 }
                 sheets_service.append_subscriber(subscriber_dict)
+
+                # 3. Send automatic welcome email
+                email_subject = "Welcome to Swolé Bears!"
+                email_body = """Hey,
+
+Really appreciate you checking out Swolé Bears.
+
+We’re building something a little different — a clean, no-shaker way to hit your protein without dealing with powders or shakes.
+I want to learn more about you a bit more, so I can make it as good as possible.
+
+Quick question for you:
+
+What do you currently do for protein or staying healthy? Anything you’re into?
+Would love to hear about it.
+
+Cheers,"""
+                try:
+                    send_mail(
+                        subject=email_subject,
+                        message=email_body,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[subscriber.email],
+                        fail_silently=True,
+                    )
+                except Exception as email_err:
+                    print(f"Failed to send email to {subscriber.email}: {email_err}")
 
                 return JsonResponse({'success': True, 'message': 'Successfully joined the waitlist!'})
 

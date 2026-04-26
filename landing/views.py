@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.mail import send_mail
 from django.conf import settings
+from django.templatetags.static import static
 
 from .forms import SubscriberForm
 from .models import Subscriber
@@ -85,7 +86,12 @@ Cheers,
 David M. Louis | Founder
 Swolé Bears - Pre-order Now swolebears.com"""
 
-                html_message = """\
+                ig_url = request.build_absolute_uri(static('images/instagram-circle-small.png'))
+                tt_url = request.build_absolute_uri(static('images/tiktok-circle-small.png'))
+                yt_url = request.build_absolute_uri(static('images/youtube-circle-small.png'))
+                fb_url = request.build_absolute_uri(static('images/facebook-circle-small.png'))
+
+                html_message = f"""\
 <p style="font-family: Arial, sans-serif; font-size: 15px; color: #222;">Hey,</p>
 <p style="font-family: Arial, sans-serif; font-size: 15px; color: #222;">Really appreciate you checking out Swolé Bears.</p>
 <p style="font-family: Arial, sans-serif; font-size: 15px; color: #222;">We’re building something a little different — a clean, no-shaker way to hit your protein without dealing with powders or shakes.<br>
@@ -100,10 +106,10 @@ Would love to hear about it.</p>
     David M. Louis | <em>Founder</em><br>
     <strong>Swolé Bears - Pre-order Now</strong> <a href="https://swolebears.com" style="color: blue; text-decoration: none;">swolebears.com</a><br>
     <br>
-    <a href="https://instagram.com/swolebearsgummy"><img src="https://img.icons8.com/fluency/48/instagram-new.png" width="24" height="24" alt="Instagram" style="margin-right: 5px;"></a>
-    <a href="https://tiktok.com/@swolebears"><img src="https://img.icons8.com/ios-filled/50/tiktok.png" width="24" height="24" alt="TikTok" style="margin-right: 5px;"></a>
-    <a href="https://youtube.com/@swolebears"><img src="https://img.icons8.com/color/48/youtube-play.png" width="24" height="24" alt="YouTube" style="margin-right: 5px;"></a>
-    <a href="https://www.facebook.com/groups/swolebearslaunch"><img src="https://img.icons8.com/color/48/facebook-new.png" width="24" height="24" alt="Facebook"></a>
+    <a href="https://instagram.com/swolebearsgummy"><img src="{ig_url}" width="24" height="24" alt="Instagram" style="margin-right: 5px;"></a>
+    <a href="https://tiktok.com/@swolebears"><img src="{tt_url}" width="24" height="24" alt="TikTok" style="margin-right: 5px;"></a>
+    <a href="https://youtube.com/@swolebears"><img src="{yt_url}" width="24" height="24" alt="YouTube" style="margin-right: 5px;"></a>
+    <a href="https://www.facebook.com/groups/swolebearslaunch"><img src="{fb_url}" width="24" height="24" alt="Facebook"></a>
 </p>
 """
                 try:

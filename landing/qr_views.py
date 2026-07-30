@@ -13,7 +13,13 @@ from django.utils.decorators import method_decorator
 from user_agents import parse
 
 from .models import QRCodeCampaign, QRScanLog
-from services.qr_generator import create_vector_svg_qr, DEFAULT_SVG_LOGO, DEFAULT_PNG_LOGO
+from services.qr_generator import (
+    create_vector_svg_qr,
+    generate_qr_png_bytes,
+    generate_qr_pdf_bytes,
+    DEFAULT_SVG_LOGO,
+    DEFAULT_PNG_LOGO
+)
 
 
 # Known Bot / Crawler patterns
@@ -288,3 +294,61 @@ def serve_qr_svg_preview(request, code_id):
     )
 
     return HttpResponse(svg_data, content_type='image/svg+xml')
+
+
+@staff_member_required
+def download_qr_code(request, code_id, format_type):
+    """
+    Serves downloadable QR code files in SVG, PNG, or PDF format.
+    Endpoint: /admin/qr-analytics/download/<code_id>/<format_type>/
+    """
+    campaign = get_object_or_404(QRCodeCampaign, code_id=code_id)
+    base_url = request.build_absolute_uri('/')[:-1]
+    tracking_url = f"{base_url}/s/{campaign.code_id}"
+
+    logo_path = str(DEFAULT_SVG_LOGO) if DEFAULT_SVG_LOGO.exists() else str(DEFAULT_PNG_LOGO)
+    fmt = format_type.lower()
+    filename = f"swole_bears_qr_{campaign.code_id}.{fmt}"
+
+    if fmt == 'svg':
+        svg_data = create_vector_svg_qr(
+            url=tracking_url,
+            fg_color=campaign.fg_color,
+            bg_color=campaign.bg_color,
+            eye_color=campaign.eye_color,
+            logo_path=logo_path,
+            logo_ratio=0.22
+        )
+        response = HttpResponse(svg_data, content_type='image/svg+xml')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+
+    elif fmt == 'png':
+        png_bytes = generate_qr_png_bytes(
+            url=tracking_url,
+            fg_color=campaign.fg_color,
+            bg_color=campaign.bg_color,
+            eye_color=campaign.eye_color,
+            logo_path=logo_path,
+            logo_ratio=0.22
+        )
+        response = HttpResponse(png_bytes, content_type='image/png')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+
+    elif fmt == 'pdf':
+        pdf_bytes = generate_qr_pdf_bytes(
+            url=tracking_url,
+            fg_color=campaign.fg_color,
+            bg_color=campaign.bg_color,
+            eye_color=campaign.eye_color,
+            logo_path=logo_path,
+            logo_ratio=0.22
+        )
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+
+    else:
+        raise Http404("Unsupported format requested.")
+

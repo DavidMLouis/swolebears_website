@@ -4,7 +4,8 @@ from .qr_views import (
     DynamicQRRedirectView,
     QRAnalyticsDashboardView,
     QRCampaignAPIView,
-    serve_qr_svg_preview
+    serve_qr_svg_preview,
+    download_qr_code
 )
 
 app_name = 'landing'
@@ -16,5 +17,7 @@ urlpatterns = [
     path('admin/qr-analytics/', QRAnalyticsDashboardView.as_view(), name='qr_analytics'),
     path('admin/qr-analytics/api/campaign/', QRCampaignAPIView.as_view(), name='qr_campaign_api'),
     path('admin/qr-analytics/preview/<str:code_id>/', serve_qr_svg_preview, name='qr_svg_preview'),
+    path('admin/qr-analytics/download/<str:code_id>/<str:format_type>/', download_qr_code, name='qr_download'),
 ]
+
 

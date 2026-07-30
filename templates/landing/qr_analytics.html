@@ -192,11 +192,47 @@
                                 <span class="text-xs text-gray-500">/ {{ c.total_scans }} total</span>
                             </td>
                             <td class="py-4 px-6 text-center">
-                                <button onclick="openPreviewModal('{{ c.code_id }}', '{{ c.name|escapejs }}', '{{ c.target_url|escapejs }}')" class="bg-slate-800 hover:bg-slate-700 p-2 rounded-lg text-gray-300 border border-white/10 hover:border-brand-gold/50 transition-colors inline-flex items-center gap-1 text-xs">
-                                    <svg class="w-4 h-4 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
-                                    Preview
-                                </button>
+                                <div class="inline-flex items-center justify-center gap-2">
+                                    <button onclick="openPreviewModal('{{ c.code_id }}', '{{ c.name|escapejs }}', '{{ c.target_url|escapejs }}')" class="bg-slate-800 hover:bg-slate-700 p-2 rounded-lg text-gray-300 border border-white/10 hover:border-brand-gold/50 transition-colors inline-flex items-center gap-1 text-xs">
+                                        <svg class="w-4 h-4 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                                        Preview
+                                    </button>
+                                    <div class="relative inline-block text-left" id="download-dropdown-container-{{ c.code_id }}">
+                                        <button onclick="toggleTableDownloadDropdown('{{ c.code_id }}', event)" class="bg-slate-800 hover:bg-slate-700 text-brand-gold font-bold py-1.5 px-3 rounded-lg border border-brand-gold/30 transition-all inline-flex items-center gap-1.5 text-xs active:scale-95">
+                                            <svg class="w-3.5 h-3.5 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                            Download
+                                            <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </button>
+                                        <div id="table-download-menu-{{ c.code_id }}" class="hidden absolute right-0 mt-2 w-52 rounded-xl bg-slate-900 border border-white/10 shadow-2xl z-30 overflow-hidden divide-y divide-white/5 text-left">
+                                            <div class="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-slate-950/60">Download Format</div>
+                                            <div class="py-1">
+                                                <a href="/admin/qr-analytics/download/{{ c.code_id }}/png/" download="swole_bears_qr_{{ c.code_id }}.png" class="flex items-center gap-2.5 px-3 py-2 text-xs text-gray-200 hover:bg-emerald-500/10 hover:text-emerald-400 transition-colors">
+                                                    <span class="px-1.5 py-0.5 bg-emerald-500/20 rounded font-mono text-[10px] text-emerald-400 font-bold">PNG</span>
+                                                    <div>
+                                                        <div class="font-bold">PNG Image</div>
+                                                        <div class="text-[10px] text-gray-400">High-Res Raster (.png)</div>
+                                                    </div>
+                                                </a>
+                                                <a href="/admin/qr-analytics/download/{{ c.code_id }}/pdf/" download="swole_bears_qr_{{ c.code_id }}.pdf" class="flex items-center gap-2.5 px-3 py-2 text-xs text-gray-200 hover:bg-rose-500/10 hover:text-rose-400 transition-colors">
+                                                    <span class="px-1.5 py-0.5 bg-rose-500/20 rounded font-mono text-[10px] text-rose-400 font-bold">PDF</span>
+                                                    <div>
+                                                        <div class="font-bold">PDF Document</div>
+                                                        <div class="text-[10px] text-gray-400">Print Ready (.pdf)</div>
+                                                    </div>
+                                                </a>
+                                                <a href="/admin/qr-analytics/download/{{ c.code_id }}/svg/" download="swole_bears_qr_{{ c.code_id }}.svg" class="flex items-center gap-2.5 px-3 py-2 text-xs text-gray-200 hover:bg-amber-500/10 hover:text-amber-400 transition-colors">
+                                                    <span class="px-1.5 py-0.5 bg-amber-500/20 rounded font-mono text-[10px] text-amber-400 font-bold">SVG</span>
+                                                    <div>
+                                                        <div class="font-bold">Vector SVG</div>
+                                                        <div class="text-[10px] text-gray-400">Scalable Vector (.svg)</div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
+
                             <td class="py-4 px-6 text-right">
                                 <button onclick="openEditModal('{{ c.code_id }}', '{{ c.name|escapejs }}', '{{ c.target_url|escapejs }}', '{{ c.fg_color }}', '{{ c.bg_color }}', '{{ c.eye_color }}')" class="text-xs bg-amber-500/10 hover:bg-amber-500/20 text-brand-gold font-bold py-1.5 px-3 rounded-lg border border-amber-500/30 transition-colors">
                                     Edit URL
@@ -353,12 +389,45 @@
                 <img id="previewSvgImg" src="" alt="QR Preview" class="w-64 h-64 object-contain">
             </div>
 
-            <div class="flex justify-center gap-3">
-                <a id="downloadSvgBtn" href="" download="" class="bg-gradient-to-r from-brand-gold to-amber-600 text-slate-950 font-bold py-2 px-4 rounded-xl text-xs shadow-md gold-glow flex items-center gap-1.5">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Download SVG (Vector)
-                </a>
+            <div class="flex justify-center">
+                <div class="relative inline-block text-left w-full max-w-xs" id="previewDownloadDropdownContainer">
+                    <button id="modalDownloadMainBtn" type="button" onclick="toggleModalDownloadDropdown(event)" class="w-full bg-gradient-to-r from-brand-gold to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-950 font-bold py-2.5 px-4 rounded-xl text-xs shadow-lg gold-glow flex items-center justify-between transition-all active:scale-98">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            <span>Download Image / Document</span>
+                        </span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    
+                    <div id="modalDownloadMenu" class="hidden absolute left-0 right-0 bottom-full mb-2 rounded-xl bg-slate-900 border border-white/10 shadow-2xl z-50 overflow-hidden divide-y divide-white/5 text-left">
+                        <div class="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-slate-950/80">Select Download Format</div>
+                        <div class="py-1">
+                            <a id="modalDownloadPng" href="" download="" class="flex items-center gap-3 px-4 py-2.5 text-xs text-gray-200 hover:bg-emerald-500/10 hover:text-emerald-400 transition-colors">
+                                <span class="px-2 py-1 bg-emerald-500/20 rounded-lg font-mono text-xs text-emerald-400 font-bold">PNG</span>
+                                <div>
+                                    <div class="font-bold text-white">PNG Image (.png)</div>
+                                    <div class="text-[11px] text-gray-400">High-resolution 300 DPI raster</div>
+                                </div>
+                            </a>
+                            <a id="modalDownloadPdf" href="" download="" class="flex items-center gap-3 px-4 py-2.5 text-xs text-gray-200 hover:bg-rose-500/10 hover:text-rose-400 transition-colors">
+                                <span class="px-2 py-1 bg-rose-500/20 rounded-lg font-mono text-xs text-rose-400 font-bold">PDF</span>
+                                <div>
+                                    <div class="font-bold text-white">PDF Document (.pdf)</div>
+                                    <div class="text-[11px] text-gray-400">Print-ready document for packaging & flyers</div>
+                                </div>
+                            </a>
+                            <a id="modalDownloadSvg" href="" download="" class="flex items-center gap-3 px-4 py-2.5 text-xs text-gray-200 hover:bg-amber-500/10 hover:text-brand-gold transition-colors">
+                                <span class="px-2 py-1 bg-amber-500/20 rounded-lg font-mono text-xs text-amber-400 font-bold">SVG</span>
+                                <div>
+                                    <div class="font-bold text-white">Vector SVG (.svg)</div>
+                                    <div class="text-[11px] text-gray-400">Infinitely scalable vector graphics</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 
@@ -481,15 +550,56 @@
             
             const previewUrl = `/admin/qr-analytics/preview/${codeId}/`;
             document.getElementById('previewSvgImg').src = previewUrl;
-            document.getElementById('downloadSvgBtn').href = previewUrl;
-            document.getElementById('downloadSvgBtn').download = `swole_bears_qr_${codeId}.svg`;
 
+            document.getElementById('modalDownloadPng').href = `/admin/qr-analytics/download/${codeId}/png/`;
+            document.getElementById('modalDownloadPng').download = `swole_bears_qr_${codeId}.png`;
+
+            document.getElementById('modalDownloadPdf').href = `/admin/qr-analytics/download/${codeId}/pdf/`;
+            document.getElementById('modalDownloadPdf').download = `swole_bears_qr_${codeId}.pdf`;
+
+            document.getElementById('modalDownloadSvg').href = `/admin/qr-analytics/download/${codeId}/svg/`;
+            document.getElementById('modalDownloadSvg').download = `swole_bears_qr_${codeId}.svg`;
+
+            document.getElementById('modalDownloadMenu').classList.add('hidden');
             document.getElementById('previewModal').classList.remove('hidden');
         }
 
         function closePreviewModal() {
             document.getElementById('previewModal').classList.add('hidden');
+            document.getElementById('modalDownloadMenu').classList.add('hidden');
         }
+
+        function toggleModalDownloadDropdown(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('modalDownloadMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function toggleTableDownloadDropdown(codeId, event) {
+            event.stopPropagation();
+            document.querySelectorAll('[id^="table-download-menu-"]').forEach(el => {
+                if (el.id !== `table-download-menu-${codeId}`) {
+                    el.classList.add('hidden');
+                }
+            });
+            const menu = document.getElementById(`table-download-menu-${codeId}`);
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
+        }
+
+        document.addEventListener('click', (event) => {
+            const modalMenu = document.getElementById('modalDownloadMenu');
+            if (modalMenu && !event.target.closest('#previewDownloadDropdownContainer')) {
+                modalMenu.classList.add('hidden');
+            }
+            document.querySelectorAll('[id^="table-download-menu-"]').forEach(menu => {
+                if (!event.target.closest('[id^="download-dropdown-container-"]')) {
+                    menu.classList.add('hidden');
+                }
+            });
+        });
+
 
         // Color Picker Sync
         document.getElementById('modalFgColor').addEventListener('input', (e) => {

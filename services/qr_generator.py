@@ -6,6 +6,7 @@ with embedded brand logos and Error Correction Level H.
 
 import os
 import sys
+import io
 import base64
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -204,10 +205,11 @@ def create_raster_png_qr(
     eye_inner_color: str = None,
     logo_path: str = None,
     logo_ratio: float = 0.22,
-    output_path: str = "qr.png"
+    output_path: str = None
 ):
     """
     Generates a high-res raster PNG QR code with embedded logo and custom corner square colors.
+    Returns the PIL Image object, and optionally saves to output_path if provided.
     """
     fg_resolved = resolve_color(fg_color, "#000000")
     bg_resolved = resolve_color(bg_color, "#FFFFFF")
@@ -290,5 +292,76 @@ def create_raster_png_qr(
         except Exception as e:
             print(f"Warning: Failed to overlay logo on PNG: {e}")
 
-    img.save(output_path)
-    return output_path
+    if output_path:
+        img.save(str(output_path))
+    return img
+
+
+def generate_qr_png_bytes(
+    url: str,
+    fg_color: str = "#000000",
+    bg_color: str = "#FFFFFF",
+    eye_color: str = None,
+    eye_outer_color: str = None,
+    eye_inner_color: str = None,
+    logo_path: str = None,
+    logo_ratio: float = 0.22
+) -> bytes:
+    """Generates PNG format bytes for QR code."""
+    img = create_raster_png_qr(
+        url=url,
+        fg_color=fg_color,
+        bg_color=bg_color,
+        eye_color=eye_color,
+        eye_outer_color=eye_outer_color,
+        eye_inner_color=eye_inner_color,
+        logo_path=logo_path,
+        logo_ratio=logo_ratio,
+        output_path=None
+    )
+    buf = io.BytesIO()
+    img.save(buf, format='PNG')
+    return buf.getvalue()
+
+
+def generate_qr_pdf_bytes(
+    url: str,
+    fg_color: str = "#000000",
+    bg_color: str = "#FFFFFF",
+    eye_color: str = None,
+    eye_outer_color: str = None,
+    eye_inner_color: str = None,
+    logo_path: str = None,
+    logo_ratio: float = 0.22
+) -> bytes:
+    """Generates print-ready PDF document bytes for QR code."""
+    img = create_raster_png_qr(
+        url=url,
+        fg_color=fg_color,
+        bg_color=bg_color,
+        eye_color=eye_color,
+        eye_outer_color=eye_outer_color,
+        eye_inner_color=eye_inner_color,
+        logo_path=logo_path,
+        logo_ratio=logo_ratio,
+        output_path=None
+    )
+    
+    bg_resolved = resolve_color(bg_color, "#FFFFFF")
+    bg_rgb = (255, 255, 255)
+    if bg_resolved.startswith("#") and len(bg_resolved) == 7:
+        try:
+            bg_rgb = tuple(int(bg_resolved[i:i+2], 16) for i in (1, 3, 5))
+        except ValueError:
+            bg_rgb = (255, 255, 255)
+            
+    pdf_img = Image.new('RGB', img.size, bg_rgb)
+    if img.mode == 'RGBA':
+        pdf_img.paste(img, mask=img.split()[3])
+    else:
+        pdf_img.paste(img)
+        
+    buf = io.BytesIO()
+    pdf_img.save(buf, format='PDF', resolution=300.0)
+    return buf.getvalue()
+

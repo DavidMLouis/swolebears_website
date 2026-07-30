@@ -1,0 +1,537 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swole Bears | QR Code Telemetry & Campaign Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#F59E0B',
+                            darkGold: '#D97706',
+                            red: '#E21E26',
+                            dark: '#0F172A',
+                            card: '#1E293B',
+                            cardBorder: 'rgba(255,255,255,0.08)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0B0F19; color: #F1F5F9; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .gold-glow { box-shadow: 0 0 20px rgba(245, 158, 11, 0.15); }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased pb-12">
+    {% csrf_token %}
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10 py-4 px-6 mb-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <img src="{% static 'images/Swole_Bears_RGB_Logomark.png' %}" alt="Swole Bears" class="h-10 w-auto">
+                <div>
+                    <h1 class="text-xl font-extrabold text-white tracking-wide">Swolé Bears <span class="text-brand-gold">QR Telemetry</span></h1>
+                    <p class="text-xs text-gray-400">Self-Hosted Dynamic Redirect & Analytics Dashboard</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="openCampaignModal()" class="bg-gradient-to-r from-brand-gold to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-950 font-bold py-2.5 px-5 rounded-xl text-sm shadow-lg gold-glow transition-all active:scale-95 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    New QR Campaign
+                </button>
+                <a href="/admin/landing/qrcodecampaign/" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-gray-300 font-semibold py-2.5 px-4 rounded-xl text-sm border border-white/10 transition-colors">
+                    Django Admin
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 space-y-8">
+        <!-- Top Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <!-- Total Campaigns -->
+            <div class="glass-panel p-5 rounded-2xl relative overflow-hidden">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Active Campaigns</p>
+                        <h3 class="text-3xl font-black text-white mt-1">{{ total_campaigns }}</h3>
+                    </div>
+                    <div class="p-3 bg-amber-500/10 rounded-xl text-brand-gold">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-gray-400">Self-hosted dynamic routes</div>
+            </div>
+
+            <!-- Total Scans -->
+            <div class="glass-panel p-5 rounded-2xl relative overflow-hidden">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Scans</p>
+                        <h3 class="text-3xl font-black text-white mt-1">{{ total_scans }}</h3>
+                    </div>
+                    <div class="p-3 bg-blue-500/10 rounded-xl text-blue-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-gray-400">Captured across all campaigns</div>
+            </div>
+
+            <!-- Human Scans -->
+            <div class="glass-panel p-5 rounded-2xl relative overflow-hidden">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Human Visitors</p>
+                        <h3 class="text-3xl font-black text-emerald-400 mt-1">{{ human_scans }}</h3>
+                    </div>
+                    <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-emerald-400 font-medium">Verified user traffic</div>
+            </div>
+
+            <!-- Bot Scans -->
+            <div class="glass-panel p-5 rounded-2xl relative overflow-hidden">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Crawlers & Bots</p>
+                        <h3 class="text-3xl font-black text-rose-400 mt-1">{{ bot_scans }}</h3>
+                    </div>
+                    <div class="p-3 bg-rose-500/10 rounded-xl text-rose-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-rose-400/80">Filtered out from analytics</div>
+            </div>
+        </div>
+
+        <!-- Interactive Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Timeline Chart (2 cols) -->
+            <div class="glass-panel p-6 rounded-2xl lg:col-span-2">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-white">Scan Activity (Last 30 Days)</h2>
+                        <p class="text-xs text-gray-400">Daily breakdown of human scans vs crawlers</p>
+                    </div>
+                </div>
+                <div class="h-64">
+                    <canvas id="timelineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Device Distribution (1 col) -->
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="mb-6">
+                    <h2 class="text-lg font-bold text-white">Device Breakdown</h2>
+                    <p class="text-xs text-gray-400">iOS, Android, Desktop & Tablets</p>
+                </div>
+                <div class="h-64 flex justify-center items-center">
+                    <canvas id="deviceChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campaign Management Table -->
+        <div class="glass-panel rounded-2xl overflow-hidden">
+            <div class="p-6 border-b border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-white">Dynamic QR Campaigns</h2>
+                    <p class="text-xs text-gray-400">Edit destination target URLs anytime without reprinting QR codes</p>
+                </div>
+                <button onclick="openCampaignModal()" class="bg-slate-800 hover:bg-slate-700 text-brand-gold border border-brand-gold/30 font-semibold py-2 px-4 rounded-xl text-xs flex items-center gap-1.5 transition-colors">
+                    + Add Campaign
+                </button>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-gray-300">
+                    <thead class="bg-slate-900/60 text-xs uppercase tracking-wider text-gray-400 border-b border-white/10">
+                        <tr>
+                            <th class="py-3.5 px-6">Code ID</th>
+                            <th class="py-3.5 px-6">Campaign Name</th>
+                            <th class="py-3.5 px-6">Target Destination URL</th>
+                            <th class="py-3.5 px-6">Scans</th>
+                            <th class="py-3.5 px-6 text-center">QR Code</th>
+                            <th class="py-3.5 px-6 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                        {% for c in campaigns %}
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="py-4 px-6 font-mono text-amber-400 font-bold">
+                                /s/{{ c.code_id }}
+                            </td>
+                            <td class="py-4 px-6 font-semibold text-white">
+                                {{ c.name }}
+                            </td>
+                            <td class="py-4 px-6 max-w-xs truncate">
+                                <a href="{{ c.target_url }}" target="_blank" class="text-blue-400 hover:underline flex items-center gap-1">
+                                    {{ c.target_url }}
+                                    <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                </a>
+                            </td>
+                            <td class="py-4 px-6">
+                                <span class="text-emerald-400 font-bold">{{ c.human_scans }}</span>
+                                <span class="text-xs text-gray-500">/ {{ c.total_scans }} total</span>
+                            </td>
+                            <td class="py-4 px-6 text-center">
+                                <button onclick="openPreviewModal('{{ c.code_id }}', '{{ c.name|escapejs }}', '{{ c.target_url|escapejs }}')" class="bg-slate-800 hover:bg-slate-700 p-2 rounded-lg text-gray-300 border border-white/10 hover:border-brand-gold/50 transition-colors inline-flex items-center gap-1 text-xs">
+                                    <svg class="w-4 h-4 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                                    Preview
+                                </button>
+                            </td>
+                            <td class="py-4 px-6 text-right">
+                                <button onclick="openEditModal('{{ c.code_id }}', '{{ c.name|escapejs }}', '{{ c.target_url|escapejs }}', '{{ c.fg_color }}', '{{ c.bg_color }}', '{{ c.eye_color }}')" class="text-xs bg-amber-500/10 hover:bg-amber-500/20 text-brand-gold font-bold py-1.5 px-3 rounded-lg border border-amber-500/30 transition-colors">
+                                    Edit URL
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="py-8 text-center text-gray-500 text-sm">
+                                No QR campaigns created yet. Click "+ New QR Campaign" to create your first dynamic QR code!
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Telemetry Log -->
+        <div class="glass-panel rounded-2xl overflow-hidden">
+            <div class="p-6 border-b border-white/10">
+                <h2 class="text-lg font-bold text-white">Live Telemetry Feed (Recent Scans)</h2>
+                <p class="text-xs text-gray-400">Captured user scans with device metadata & IP geolocation</p>
+            </div>
+            <div class="overflow-x-auto max-h-96">
+                <table class="w-full text-left text-xs text-gray-300">
+                    <thead class="bg-slate-900/60 sticky top-0 uppercase tracking-wider text-gray-400 border-b border-white/10">
+                        <tr>
+                            <th class="py-3 px-6">Timestamp (UTC)</th>
+                            <th class="py-3 px-6">Campaign</th>
+                            <th class="py-3 px-6">Device / Browser</th>
+                            <th class="py-3 px-6">Location (City, Country)</th>
+                            <th class="py-3 px-6">IP Address</th>
+                            <th class="py-3 px-6 text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                        {% for log in recent_logs %}
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="py-3 px-6 font-mono text-gray-400">
+                                {{ log.timestamp|date:"Y-m-d H:i:s" }}
+                            </td>
+                            <td class="py-3 px-6 font-semibold text-amber-400">
+                                /s/{{ log.campaign.code_id }}
+                            </td>
+                            <td class="py-3 px-6">
+                                <span class="font-medium text-white">{{ log.device_type }}</span>
+                                <span class="text-gray-500">({{ log.browser }})</span>
+                            </td>
+                            <td class="py-3 px-6">
+                                {{ log.city }}, {{ log.country }}
+                            </td>
+                            <td class="py-3 px-6 font-mono text-gray-400">
+                                {{ log.ip_address|default:"-" }}
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                {% if log.is_bot %}
+                                    <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2 py-0.5 rounded text-[10px] font-bold">BOT</span>
+                                {% else %}
+                                    <span class="inline-block bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">HUMAN</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="py-6 text-center text-gray-500">
+                                No scan logs recorded yet. Scan a QR code to see live telemetry here!
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Create / Edit Campaign Modal -->
+    <div id="campaignModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-lg rounded-2xl p-6 relative border border-white/20 shadow-2xl">
+            <button onclick="closeCampaignModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <h3 id="modalTitle" class="text-xl font-bold text-white mb-1">Create New QR Campaign</h3>
+            <p class="text-xs text-gray-400 mb-6">Map short code ID to any destination URL in real-time</p>
+
+            <form id="campaignForm" onsubmit="saveCampaign(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Code ID (Short Slug)</label>
+                    <input type="text" id="modalCodeId" required placeholder="e.g. launch-batch-1" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-white font-mono text-sm focus:border-brand-gold focus:outline-none">
+                    <p class="text-[11px] text-gray-500 mt-1">Scanner route will be: <span class="font-mono text-amber-400">{{ base_url }}/s/&lt;code_id&gt;</span></p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Campaign Title</label>
+                    <input type="text" id="modalName" required placeholder="e.g. Summer Launch Box 01" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:border-brand-gold focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Target Destination URL</label>
+                    <input type="url" id="modalTargetUrl" required placeholder="https://swolebears.com/preorder" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:border-brand-gold focus:outline-none">
+                    <p class="text-[11px] text-gray-500 mt-1">You can change this target URL at any time in the future!</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Baseline Lines (FG)</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="modalFgColor" value="#000000" class="h-9 w-12 bg-transparent rounded cursor-pointer border border-white/10">
+                            <input type="text" id="modalFgHex" value="#000000" onchange="document.getElementById('modalFgColor').value=this.value" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white font-mono text-xs">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Background Color</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="modalBgColor" value="#FFFFFF" class="h-9 w-12 bg-transparent rounded cursor-pointer border border-white/10">
+                            <input type="text" id="modalBgHex" value="#FFFFFF" onchange="document.getElementById('modalBgColor').value=this.value" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white font-mono text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider">Corner Squares (Eyes)</label>
+                        <button type="button" onclick="setSwoleRedEye()" class="text-[11px] bg-rose-600/20 hover:bg-rose-600/40 text-rose-400 font-semibold px-2 py-0.5 rounded border border-rose-500/30 transition-colors">
+                            🔴 Swole Red (#E52225)
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="color" id="modalEyeColor" value="#E52225" class="h-9 w-12 bg-transparent rounded cursor-pointer border border-white/10">
+                        <input type="text" id="modalEyeHex" placeholder="Leave empty for baseline line color" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white font-mono text-xs placeholder:text-gray-600">
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3">
+                    <button type="button" onclick="closeCampaignModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-gray-300 text-sm font-semibold rounded-xl border border-white/10">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-gradient-to-r from-brand-gold to-amber-600 hover:from-amber-500 text-slate-950 font-bold text-sm rounded-xl shadow-lg gold-glow">Save Campaign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- QR Code Preview Modal -->
+    <div id="previewModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 relative border border-white/20 shadow-2xl text-center">
+            <button onclick="closePreviewModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <h3 id="previewTitle" class="text-xl font-bold text-white mb-1">Vector QR Code</h3>
+            <p id="previewSub" class="text-xs text-amber-400 font-mono mb-4">/s/launch-batch-1</p>
+
+            <div class="bg-white p-4 rounded-2xl inline-block border-2 border-brand-gold/40 shadow-xl mb-6">
+                <img id="previewSvgImg" src="" alt="QR Preview" class="w-64 h-64 object-contain">
+            </div>
+
+            <div class="flex justify-center gap-3">
+                <a id="downloadSvgBtn" href="" download="" class="bg-gradient-to-r from-brand-gold to-amber-600 text-slate-950 font-bold py-2 px-4 rounded-xl text-xs shadow-md gold-glow flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Download SVG (Vector)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts for Charts & Interactivity -->
+    <script>
+        // Data parsed from Django View
+        const datesData = {{ dates_json|safe }};
+        const humanCounts = {{ human_counts_json|safe }};
+        const botCounts = {{ bot_counts_json|safe }};
+
+        const deviceLabels = {{ device_labels_json|safe }};
+        const deviceData = {{ device_data_json|safe }};
+
+        // 1. Timeline Line Chart
+        const ctxTimeline = document.getElementById('timelineChart').getContext('2d');
+        new Chart(ctxTimeline, {
+            type: 'line',
+            data: {
+                labels: datesData,
+                datasets: [
+                    {
+                        label: 'Human Scans',
+                        data: humanCounts,
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Bot Scans',
+                        data: botCounts,
+                        borderColor: '#F43F5E',
+                        backgroundColor: 'rgba(244, 63, 94, 0.05)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 1.5,
+                        borderDash: [4, 4]
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#94A3B8' } }
+                },
+                scales: {
+                    x: { ticks: { color: '#64748B' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                    y: { ticks: { color: '#64748B', precision: 0 }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+                }
+            }
+        });
+
+        // 2. Device Doughnut Chart
+        const ctxDevice = document.getElementById('deviceChart').getContext('2d');
+        new Chart(ctxDevice, {
+            type: 'doughnut',
+            data: {
+                labels: deviceLabels.length > 0 ? deviceLabels : ['No Data'],
+                datasets: [{
+                    data: deviceData.length > 0 ? deviceData : [1],
+                    backgroundColor: ['#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#F43F5E'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#94A3B8', boxWidth: 12 } }
+                }
+            }
+        });
+
+        // Modal Handlers
+        // Modal Handlers
+        function setSwoleRedEye() {
+            document.getElementById('modalEyeColor').value = "#E52225";
+            document.getElementById('modalEyeHex').value = "#E52225";
+        }
+
+        function openCampaignModal() {
+            document.getElementById('modalTitle').innerText = "Create New QR Campaign";
+            document.getElementById('modalCodeId').value = "";
+            document.getElementById('modalCodeId').readOnly = false;
+            document.getElementById('modalName').value = "";
+            document.getElementById('modalTargetUrl').value = "";
+            document.getElementById('modalFgColor').value = "#000000";
+            document.getElementById('modalFgHex').value = "#000000";
+            document.getElementById('modalBgColor').value = "#FFFFFF";
+            document.getElementById('modalBgHex').value = "#FFFFFF";
+            document.getElementById('modalEyeColor').value = "#E52225";
+            document.getElementById('modalEyeHex').value = "";
+            document.getElementById('campaignModal').classList.remove('hidden');
+        }
+
+        function openEditModal(codeId, name, targetUrl, fg, bg, eye) {
+            document.getElementById('modalTitle').innerText = "Edit Campaign Destination URL";
+            document.getElementById('modalCodeId').value = codeId;
+            document.getElementById('modalCodeId').readOnly = true;
+            document.getElementById('modalName').value = name;
+            document.getElementById('modalTargetUrl').value = targetUrl;
+            document.getElementById('modalFgColor').value = fg || "#000000";
+            document.getElementById('modalFgHex').value = fg || "#000000";
+            document.getElementById('modalBgColor').value = bg || "#FFFFFF";
+            document.getElementById('modalBgHex').value = bg || "#FFFFFF";
+            document.getElementById('modalEyeColor').value = eye || "#E52225";
+            document.getElementById('modalEyeHex').value = eye || "";
+            document.getElementById('campaignModal').classList.remove('hidden');
+        }
+
+        function closeCampaignModal() {
+            document.getElementById('campaignModal').classList.add('hidden');
+        }
+
+        function openPreviewModal(codeId, name, targetUrl) {
+            document.getElementById('previewTitle').innerText = name;
+            document.getElementById('previewSub').innerText = `/s/${codeId} -> ${targetUrl}`;
+            
+            const previewUrl = `/admin/qr-analytics/preview/${codeId}/`;
+            document.getElementById('previewSvgImg').src = previewUrl;
+            document.getElementById('downloadSvgBtn').href = previewUrl;
+            document.getElementById('downloadSvgBtn').download = `swole_bears_qr_${codeId}.svg`;
+
+            document.getElementById('previewModal').classList.remove('hidden');
+        }
+
+        function closePreviewModal() {
+            document.getElementById('previewModal').classList.add('hidden');
+        }
+
+        // Color Picker Sync
+        document.getElementById('modalFgColor').addEventListener('input', (e) => {
+            document.getElementById('modalFgHex').value = e.target.value;
+        });
+        document.getElementById('modalBgColor').addEventListener('input', (e) => {
+            document.getElementById('modalBgHex').value = e.target.value;
+        });
+        document.getElementById('modalEyeColor').addEventListener('input', (e) => {
+            document.getElementById('modalEyeHex').value = e.target.value;
+        });
+
+        // Save Campaign via API
+        async function saveCampaign(event) {
+            event.preventDefault();
+            const code_id = document.getElementById('modalCodeId').value.trim();
+            const name = document.getElementById('modalName').value.trim();
+            const target_url = document.getElementById('modalTargetUrl').value.trim();
+            const fg_color = document.getElementById('modalFgHex').value.trim();
+            const bg_color = document.getElementById('modalBgHex').value.trim();
+            const eye_color = document.getElementById('modalEyeHex').value.trim();
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            try {
+                const response = await fetch('/admin/qr-analytics/api/campaign/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ code_id, name, target_url, fg_color, bg_color, eye_color })
+                });
+                const res = await response.json();
+                if (res.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + res.error);
+                }
+            } catch (err) {
+                alert('Failed to save campaign: ' + err.message);
+            }
+        }
+    </script>
+</body>
+</html>

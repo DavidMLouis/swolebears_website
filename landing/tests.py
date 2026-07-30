@@ -2,7 +2,8 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 from landing.models import QRCodeCampaign, QRScanLog
-from landing.management.commands.generate_qr import create_vector_svg_qr
+from services.qr_generator import create_vector_svg_qr
+
 
 
 class QRCodePipelineTestCase(TestCase):

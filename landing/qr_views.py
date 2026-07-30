@@ -13,7 +13,8 @@ from django.utils.decorators import method_decorator
 from user_agents import parse
 
 from .models import QRCodeCampaign, QRScanLog
-from landing.management.commands.generate_qr import create_vector_svg_qr, DEFAULT_SVG_LOGO, DEFAULT_PNG_LOGO
+from services.qr_generator import create_vector_svg_qr, DEFAULT_SVG_LOGO, DEFAULT_PNG_LOGO
+
 
 # Known Bot / Crawler patterns
 BOT_USER_AGENTS_REGEX = re.compile(

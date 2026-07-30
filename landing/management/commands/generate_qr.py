@@ -3,13 +3,9 @@ from pathlib import Path
 from django.core.management.base import BaseCommand
 from landing.models import QRCodeCampaign
 
-# Import helper functions from QR_code generator script
-sys_path_added = False
-QR_CODE_DIR = Path(__file__).resolve().parent.parent.parent.parent.parent / "QR_code"
-if QR_CODE_DIR.exists() and str(QR_CODE_DIR) not in os.sys.path:
-    os.sys.path.insert(0, str(QR_CODE_DIR))
+from services.qr_generator import create_vector_svg_qr, create_raster_png_qr, DEFAULT_SVG_LOGO, DEFAULT_PNG_LOGO
 
-from generate_qr import create_vector_svg_qr, create_raster_png_qr, DEFAULT_SVG_LOGO, DEFAULT_PNG_LOGO
+
 
 class Command(BaseCommand):
     help = "Generate high-resolution vector (SVG) and raster (PNG) QR codes for Swole Bears campaigns."
